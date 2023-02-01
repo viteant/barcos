@@ -4,13 +4,20 @@
  */
 package Modelo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author vchir
  */
 public class Ficha {
 
-    public static int ESTADO_OCULTO = -1;
     public static int ESTADO_VACIO = 0;
     public static int ESTADO_OCUPADO = 1;
     public static int ESTADO_GOLPEADO = 2;
@@ -20,6 +27,7 @@ public class Ficha {
     private int columna;
     private int orientacion;
     private int estado;
+    private boolean ocultarTablero = false;
 
     public Ficha(int fila, int columna, int estado) {
         this.fila = fila;
@@ -67,15 +75,23 @@ public class Ficha {
         this.estado = estado;
     }
 
+    public boolean isOcultarTablero() {
+        return ocultarTablero;
+    }
+
+    public void setOcultarTablero(boolean ocultarTablero) {
+        this.ocultarTablero = ocultarTablero;
+    }
+
     @Override
     public String toString() {
-        if (estado == ESTADO_OCUPADO) {
+        if (ocultarTablero) {
+            return "▮▮";
+        } else if (estado == ESTADO_OCUPADO) {
             return "B" + id_barco;
-        }else if(estado==ESTADO_VACIO){
+        } else if (estado == ESTADO_VACIO) {
             return "▤▤";
-        }else if(estado==ESTADO_OCULTO){
-        return "▮▮";
-                }
+        }
         return "";
     }
 

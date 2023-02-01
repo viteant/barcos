@@ -11,42 +11,37 @@ import java.util.Random;
  *
  * @author vchir
  */
-public class ControladorJuego {
+public class ControladorTablero {
 
     public static final int FILAS = 6;
     public static final int COLUMNAS = 7;
     public static final int HORIZONTAL = 0;
     public static final int VERTICAL = 1;
     public static final int[] TAMAÑOS_BARCOS = {3, 3, 2, 2, 2};
+    
+    private Ficha[][] tablero;
 
-    public int jugador_actual;
-    public Ficha[][] tablero_1;
-    public Ficha[][] tablero_2;
+    public Ficha[][] getTablero() {
+        return tablero;
+    }
 
-    public ControladorJuego(int jugador) {
-        this.jugador_actual = jugador;
+    public void setTablero(Ficha[][] tablero) {
+        this.tablero = tablero;
+    }
+
+    public ControladorTablero() {
 
         Ficha[][] tablero = new Ficha[FILAS][COLUMNAS];
         llenarTablero(tablero);
 
         for (int i = 0; i < TAMAÑOS_BARCOS.length; i++) {
-            int estado = Ficha.ESTADO_OCULTO;
-            if (jugador_actual == 1) {
-                estado = Ficha.ESTADO_OCUPADO;
-            }
-            posicionarBarco(tablero, TAMAÑOS_BARCOS[i], (i + 1), estado);
+            posicionarBarco(tablero, TAMAÑOS_BARCOS[i], (i + 1), Ficha.ESTADO_OCUPADO);
         }
-
-
-        System.out.println("JUGADOR " + jugador_actual);
+        
         mostrarTablero(tablero);
     }
 
-    public static void main(String[] args) {
-        ControladorJuego J1 = new ControladorJuego(1);
-        ControladorJuego J2 = new ControladorJuego(2);
-    }
-
+    
     public static Ficha[][] llenarTablero(Ficha[][] tablero) {
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[i].length; j++) {
