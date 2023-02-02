@@ -6,7 +6,6 @@ package Controlador;
 
 import Modelo.SocketMessage;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -19,11 +18,10 @@ public class MulticastPublisher {
 
     /*Con esta clase se envían mensajes a través del socket*/
     public static void multicast(SocketMessage message) throws IOException {
-
-        System.out.println("Send Multicast");
         DatagramSocket socket = new DatagramSocket();
-        InetAddress group = InetAddress.getByName("230.0.0.1"); //IP Para localhost, reemplazar con IP del host
-        byte[] buf = message.getBytesClass();
+        
+        InetAddress group = InetAddress.getByName("230.0.0.1"); //IP Para localhost, reemplazar con IP del host multicast
+        byte[] buf = message.getByteClass();
 
         DatagramPacket packet
                 = new DatagramPacket(buf, buf.length, group, 4446);

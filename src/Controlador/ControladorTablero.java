@@ -5,20 +5,21 @@
 package Controlador;
 
 import Modelo.Ficha;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  *
  * @author vchir
  */
-public class ControladorTablero {
+public class ControladorTablero implements Serializable {
 
     public static final int FILAS = 6;
     public static final int COLUMNAS = 7;
     public static final int HORIZONTAL = 0;
     public static final int VERTICAL = 1;
     public static final int[] TAMAÑOS_BARCOS = {3, 3, 2, 2, 2};
-    
+
     private Ficha[][] tablero;
 
     public Ficha[][] getTablero() {
@@ -31,27 +32,24 @@ public class ControladorTablero {
 
     public ControladorTablero() {
 
-        Ficha[][] tablero = new Ficha[FILAS][COLUMNAS];
-        llenarTablero(tablero);
+        tablero = new Ficha[FILAS][COLUMNAS];
+        llenarTablero();
 
         for (int i = 0; i < TAMAÑOS_BARCOS.length; i++) {
-            posicionarBarco(tablero, TAMAÑOS_BARCOS[i], (i + 1), Ficha.ESTADO_OCUPADO);
+            posicionarBarco(TAMAÑOS_BARCOS[i], (i + 1), Ficha.ESTADO_OCUPADO);
         }
-        
-        mostrarTablero(tablero);
     }
 
-    
-    public static Ficha[][] llenarTablero(Ficha[][] tablero) {
+    public void llenarTablero() {
         for (int i = 0; i < tablero.length; i++) {
             for (int j = 0; j < tablero[i].length; j++) {
                 tablero[i][j] = new Ficha(i, j, Ficha.ESTADO_VACIO);
             }
         }
-        return tablero;
     }
 
-    public static Ficha[][] posicionarBarco(Ficha[][] tablero, int extension, int identificador, int estado) {
+    public Ficha[][] posicionarBarco(int extension,
+            int identificador, int estado) {
         Random random = new Random();
         int fila_inicial, columna_inicial, orientacion;
         boolean continuar;
@@ -109,9 +107,10 @@ public class ControladorTablero {
 
     }
 
-    public static void mostrarTablero(Ficha[][] tablero) {
+    public void mostrarTablero(boolean estaOculto) {
         for (Ficha[] tablero1 : tablero) {
             for (Ficha tablero11 : tablero1) {
+                tablero11.setOcultarTablero(estaOculto);
                 System.out.print(" " + tablero11 + " ");
             }
             System.out.println("");

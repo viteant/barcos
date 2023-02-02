@@ -9,13 +9,10 @@ import appbarcos.AppBarcos;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.lang.reflect.Array;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -24,8 +21,7 @@ import java.util.logging.Logger;
 public class MulticastReceiver extends Thread {
 
     protected MulticastSocket socket = null;
-    protected byte[] buf = new byte[256];
-    private static int number = 0;
+    protected byte[] buf = new byte[25600];
     private ArrayList<Long> ids = new ArrayList<>();
 
     /**
@@ -42,19 +38,21 @@ public class MulticastReceiver extends Thread {
 
             while (true) {
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                socket.receive(packet);
+                socket.receive(packet); //En bucle hasta que llegue un paquete
 
                 SocketMessage message = getSocketMessage(packet.getData());
 
                 if (message != null) {
-                    if ("saludar".equals(message.getMessage())) {
+                    if (message.getMessage().equals("saludar")) {
                         devolverSaludo();
                     }
 
                     if ("saludando".equals(message.getMessage())) {
                         if (ids.size() >= 2) {
-                            if (!ids.contains(message.getId_client()) && AppBarcos.client_id == message.getId_client()) {
-                                rechazar();
+                            if (!ids.contains(message.getId_client())
+                                    && AppBarcos.client_id == message.getId_client()) {
+                                System.out.println("No se aceptan màs clientes");
+                                break;
                             } else {
                                 System.out.println("El cliente está lleno.");
                             }
@@ -62,21 +60,32 @@ public class MulticastReceiver extends Thread {
                             if (ids.isEmpty() || !ids.contains(message.getId_client())) {
                                 ids.add(message.getId_client());
                             }
-                            System.out.println("Existen " + ids.size() + " clientes");
+                            if (ids.size() >= 2) {
+                                long id = ids.get(0);
+                                if (AppBarcos.client_id == id) {
+                                    AppBarcos.empiezaAJugar();
+                                }
+                                AppBarcos.setCurrentPlayer(ids.indexOf(AppBarcos.client_id) + 1);
+                            } else {
+                                System.out.println("Existen "
+                                        + ids.size() + " clientes");
+                            }
+
                         }
 
+                    }
+
+                    if ("sincronizar".equals(message.getMessage())) {
+                        if (message.getId_client() != AppBarcos.client_id) {
+                            AppBarcos.sincronizarTableros(message.getTableros());
+                        }
+                        AppBarcos.mostrarTableros();
                     }
 
                     if ("end".equals(message.getMessage())) {
                         break;
                     }
-
-                    if ("rechazar".equals(message.getMessage())) {
-                        System.out.println("No se puede unirse, el cliente no acepta más peticiones.");
-                        break;
-                    }
                 }
-
             }
             socket.leaveGroup(InetAddress.getByName("230.0.0.1"));
             socket.close();

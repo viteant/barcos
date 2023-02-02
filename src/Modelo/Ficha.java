@@ -4,19 +4,13 @@
  */
 package Modelo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.Serializable;
 
 /**
  *
  * @author vchir
  */
-public class Ficha {
+public class Ficha implements Serializable {
 
     public static int ESTADO_VACIO = 0;
     public static int ESTADO_OCUPADO = 1;
@@ -86,11 +80,11 @@ public class Ficha {
     @Override
     public String toString() {
         if (ocultarTablero) {
-            return "▮▮";
+            return "XX";
         } else if (estado == ESTADO_OCUPADO) {
             return "B" + id_barco;
         } else if (estado == ESTADO_VACIO) {
-            return "▤▤";
+            return "--";
         }
         return "";
     }

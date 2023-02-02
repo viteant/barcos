@@ -4,6 +4,7 @@
  */
 package Modelo;
 
+import Controlador.ControladorTablero;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -17,6 +18,7 @@ public class SocketMessage implements Serializable {
 
     private long id_client;
     private String message;
+    private ControladorTablero[] tableros;
 
     public long getId_client() {
         return id_client;
@@ -34,12 +36,28 @@ public class SocketMessage implements Serializable {
         this.message = message;
     }
 
+    public ControladorTablero[] getTableros() {
+        return tableros;
+    }
+
+    public void setTableros(ControladorTablero[] tableros) {
+        this.tableros = tableros;
+    }
+    
+    
+
     public SocketMessage(long id_client, String message) {
         this.id_client = id_client;
         this.message = message;
     }
 
-    public byte[] getBytesClass() {
+    public SocketMessage(long id_client, String message, ControladorTablero[] tableros) {
+        this.id_client = id_client;
+        this.message = message;
+        this.tableros = tableros;
+    }
+
+    public byte[] getByteClass() {
         ObjectOutputStream oos = null;
         ByteArrayOutputStream bos = null;
         try {
